@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Input from "./Input";
 import Button from "../UI/Button";
 import { getFormattedDate } from "../../util/date";
+import { GlobalStyles } from "../../constants/styles";
 
 const ExpenseForm = ({
   onCancel,
@@ -76,15 +77,16 @@ const ExpenseForm = ({
             onChangeText: inputChangeHandler.bind(this, "amount"),
             value: inputs.amount.value,
           }}
+          invalid={!inputs.amount.isValid}
         />
         <Input
           label="Date"
           style={styles.rowInput}
+          invalid={!inputs.date.isValid}
           textInputConfig={{
             placeholder: "YYYY-MM-DD",
             maxLength: 10,
             keyboardType: "phone-pad",
-
             onChangeText: inputChangeHandler.bind(this, "date"),
             value: inputs.date.value,
           }}
@@ -92,6 +94,7 @@ const ExpenseForm = ({
       </View>
       <Input
         label="Description"
+        invalid={!inputs.description.isValid}
         textInputConfig={{
           placeholder: "Description...",
           multiline: true,
@@ -100,7 +103,9 @@ const ExpenseForm = ({
         }}
       />
       {formIsInvalid && (
-        <Text>Invalid input values - please check your entered data!</Text>
+        <Text style={styles.errorText}>
+          Invalid input values - please check your entered data!
+        </Text>
       )}
       <View style={styles.buttons}>
         <Button style={styles.button} mode="flat" onPress={onCancel}>
@@ -142,5 +147,10 @@ const styles = StyleSheet.create({
   },
   rowInput: {
     flex: 1,
+  },
+  errorText: {
+    textAlign: "center",
+    color: GlobalStyles.colors.error500,
+    margin: 8,
   },
 });
