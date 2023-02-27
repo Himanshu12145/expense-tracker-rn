@@ -24,19 +24,11 @@ const ManageExpense = ({ route, navigation }) => {
   function cancelHandler() {
     navigation.goBack();
   }
-  function confirmHandler() {
+  function confirmHandler(expenseData) {
     if (isEditing) {
-      expensesCtx.updateExpenses(editedExpenseId, {
-        description: "Test Update",
-        date: new Date("2023-02-26"),
-        amount: 129,
-      });
+      expensesCtx.updateExpenses(editedExpenseId, expenseData);
     } else {
-      expensesCtx.addExpenses({
-        description: "Test Add",
-        date: new Date("2023-02-25"),
-        amount: 29,
-      });
+      expensesCtx.addExpenses(expenseData);
     }
     navigation.goBack();
   }
@@ -44,6 +36,7 @@ const ManageExpense = ({ route, navigation }) => {
     <View style={styles.container}>
       <ExpenseForm
         onCancel={cancelHandler}
+        onSubmit={confirmHandler}
         submitButtonLabel={isEditing ? "Update" : "Add"}
       />
 
