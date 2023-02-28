@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
 import { ExpensesContext } from "../store/expenses-context";
 import { getDateMinusDays } from "../util/date";
@@ -8,17 +9,31 @@ import { fetchExpense } from "../util/http";
 
 const RecentExpenses = () => {
   const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState();
   const expensesCtx = useContext(ExpensesContext);
 
   useEffect(() => {
     async function getExpenses() {
       setIsFetching(true);
-      const expenses = await fetchExpense();
+      try {
+        const expenses = await fetchExpense();
+        expensesCtx.setExpenses(expenses);
+      } catch (error) {
+        setError("Could not Fetch expenses!");
+      }
       setIsFetching(false);
-      expensesCtx.setExpenses(expenses);
     }
     getExpenses();
   }, []);
+
+  function errorHandler() {
+    setError(null);
+  }
+
+  if (error && !isFetching) {
+    return <ErrorOverlay message={error} onConfirm={errorHandler} />;
+  }
+
   if (isFetching) {
     return <LoadingOverlay />;
   }
